@@ -1,11 +1,10 @@
 #pragma once
 /*
-* Author: Jaime Rivera
-* Date : 2020.04.20
-* Copyright : Copyright 2020 Jaime Rivera | www.jaimervq.com
-* Brief: Basic implementation of a obj files reader
-*/
-
+ * Author: Jaime Rivera
+ * Date : 2020.04.20
+ * Copyright : Copyright 2020 Jaime Rivera | www.jaimervq.com
+ * Brief: Basic implementation of a obj files reader
+ */
 
 #include <fstream>
 #include <iostream>
@@ -14,7 +13,6 @@
 #include <vector>
 
 #include "shapes_3D.h"
-
 
 class ObjReader
 {
@@ -47,10 +45,11 @@ public:
 	// Read from file
 	void read_from_file()
 	{
-		std::ifstream f{ this->source_file };
-		if (!f.is_open()) return;
+		std::ifstream f{this->source_file};
+		if (!f.is_open())
+			return;
 
-		std::vector <Vect3> temp_vertices;
+		std::vector<Vect3> temp_vertices;
 		while (!f.eof())
 		{
 			char line[512];
@@ -65,8 +64,9 @@ public:
 			{
 				double vx, vy, vz;
 				s >> type >> vx >> vy >> vz;
-				if (invert_y) vy *= -1;
-				Vect3 vert{ vx, vy, vz };
+				if (invert_y)
+					vy *= -1;
+				Vect3 vert{vx, vy, vz};
 				temp_vertices.push_back(vert);
 
 				this->vertex_count++;
@@ -82,7 +82,8 @@ public:
 					std::string face_index;
 					for (char c : face_data)
 					{
-						if (c == '/') break;
+						if (c == '/')
+							break;
 						face_index += c;
 					}
 
@@ -90,15 +91,15 @@ public:
 					f.add_vertex(temp_vertices[idx]);
 				}
 				this->faces.push_back(f);
-				this->face_count ++;
+				this->face_count++;
 
-				//Edges
+				// Edges
 				for (int i = 1; i < f.count_vertices(); i++)
 				{
-					Edge e{ f[i - 1], f[i] };
+					Edge e{f[i - 1], f[i]};
 					this->edge_pool.push_back(e);
 				}
-				Edge e_closure{ f[f.count_vertices() - 1], f[0] };
+				Edge e_closure{f[f.count_vertices() - 1], f[0]};
 				this->edge_pool.push_back(e_closure);
 			}
 		}
@@ -110,31 +111,37 @@ public:
 	}
 
 	// Get
-	std::vector <Face> & get_faces() { return this->faces; }
-	BoundingBox & get_bb() { return this->bounding_box; }
+	std::vector<Face> &get_faces() { return this->faces; }
+	BoundingBox &get_bb() { return this->bounding_box; }
 	int count_total_faces() { return this->face_count; }
 	int count_total_vertices() { return this->vertex_count; }
 
 	// Utility for drawing
-	std::vector <Edge> get_edge_pool() { return this->edge_pool; }
+	std::vector<Edge> get_edge_pool() { return this->edge_pool; }
 
 	// Transformations
 	void to_center()
 	{
 		// Calculating displacement
 		Vect3 displacement = bounding_box.get_center().get_inverted();
-		
+
 		if (displacement.get_magnitude() > 0.0)
-		printf("[WARNING] The center of the obj's bounding box was off-center.\n"
-			   "          Displacing it back to center {%f, %f, %f}\n", displacement.get_x(), displacement.get_y(), displacement.get_z());
+			printf("[WARNING] The center of the obj's bounding box was off-center.\n"
+				   "          Displacing it back to center {%f, %f, %f}\n",
+				   displacement.get_x(), displacement.get_y(), displacement.get_z());
 
 		// Moving faces and BB
-		for (Face f : this->faces){ f.move(displacement); }
+		for (Face f : this->faces)
+		{
+			f.move(displacement);
+		}
 		this->bounding_box.move(displacement);
 
 		// Moving edge pool
-		for (Edge &e : this->edge_pool){ e.move(displacement); }
-
+		for (Edge &e : this->edge_pool)
+		{
+			e.move(displacement);
+		}
 	}
 	void rotate_around_axis(double angle, Vect3 axis)
 	{
