@@ -1,12 +1,11 @@
 #pragma once
 /*
-* Author: Jaime Rivera
-* Date : 2020.04.20
-* Copyright : Copyright 2020 Jaime Rivera | www.jaimervq.com
-* Brief: Basic implementations of a brush and image to draw onto
-* Credits: Sean Barrett, author of the STB library, used in this project (https://github.com/nothings/stb)
-*/
-
+ * Author: Jaime Rivera
+ * Date : 2020.04.20
+ * Copyright : Copyright 2020 Jaime Rivera | www.jaimervq.com
+ * Brief: Basic implementations of a brush and image to draw onto
+ * Credits: Sean Barrett, author of the STB library, used in this project (https://github.com/nothings/stb)
+ */
 
 #include <algorithm>
 #include <string>
@@ -21,7 +20,6 @@
 #include "shapes_3D.h"
 #include "text_sprites.h"
 
-
 // --------- BASIC BRUSH --------- //
 class BasicBrush
 {
@@ -32,14 +30,10 @@ private:
 
 public:
 	// Constructors
-	BasicBrush() :
-		color(BasicColor::White), tip_width(1), tip_shape(BasicBrush::ROUND_TIP_SHAPE){}
-	BasicBrush(BasicColor initial_color) :
-		color(initial_color), tip_width(1), tip_shape(BasicBrush::ROUND_TIP_SHAPE) {}
-	BasicBrush(BasicColor initial_color, int initial_thickness) :
-		color(initial_color), tip_width(initial_thickness), tip_shape(BasicBrush::ROUND_TIP_SHAPE) {}
-	BasicBrush(BasicColor initial_color, int initial_thickness, std::string initial_tip_shape) :
-		color(initial_color), tip_width(initial_thickness), tip_shape(initial_tip_shape) {}
+	BasicBrush() : color(BasicColor::White), tip_width(1), tip_shape(BasicBrush::ROUND_TIP_SHAPE) {}
+	BasicBrush(BasicColor initial_color) : color(initial_color), tip_width(1), tip_shape(BasicBrush::ROUND_TIP_SHAPE) {}
+	BasicBrush(BasicColor initial_color, int initial_thickness) : color(initial_color), tip_width(initial_thickness), tip_shape(BasicBrush::ROUND_TIP_SHAPE) {}
+	BasicBrush(BasicColor initial_color, int initial_thickness, std::string initial_tip_shape) : color(initial_color), tip_width(initial_thickness), tip_shape(initial_tip_shape) {}
 
 	// Predefined tips (widths and shapes)
 	static const int SLIM_TIP_WIDTH;
@@ -54,13 +48,11 @@ public:
 
 	// Set
 	void set_color(BasicColor new_color) { this->color = new_color; }
-
 };
 const int BasicBrush::SLIM_TIP_WIDTH = 1;
 const int BasicBrush::THICK_TIP_WIDTH = 4;
 const std::string BasicBrush::SQUARE_TIP_SHAPE = "SQUARE";
 const std::string BasicBrush::ROUND_TIP_SHAPE = "ROUND";
-
 
 // --------- BASIC IMAGE --------- //
 class BasicImage
@@ -72,7 +64,7 @@ private:
 	unsigned char *pixels;
 	int max_index;
 
-	// Drawing coeficients 
+	// Drawing coeficients
 	const double SOLID_LINE_FACTOR = 0.5;
 	const double DOTTED_LINE_FACTOR = 8.0;
 	const double SOLID_CIRCUMF_FACTOR = 0.5;
@@ -85,14 +77,12 @@ private:
 
 public:
 	// Constructors
-	BasicImage(int input_width, int input_height, int input_channels) :
-		width(input_width), height(input_height), channels(input_channels), max_index(input_width * input_height * input_channels)
+	BasicImage(int input_width, int input_height, int input_channels) : width(input_width), height(input_height), channels(input_channels), max_index(input_width * input_height * input_channels)
 	{
 		this->pixels = new unsigned char[max_index];
 		this->clear();
 	}
-	BasicImage(unsigned char *input_pixels, int input_width, int input_height, int input_channels):
-		pixels(input_pixels), width(input_width), height(input_height), channels(input_channels), max_index(input_width * input_height * input_channels){}
+	BasicImage(unsigned char *input_pixels, int input_width, int input_height, int input_channels) : pixels(input_pixels), width(input_width), height(input_height), channels(input_channels), max_index(input_width * input_height * input_channels) {}
 
 	// Predefided resolutions
 	static BasicImage HD_720();
@@ -114,10 +104,12 @@ public:
 		double y = pos.get_y();
 
 		int xi, yi;
-		transform_to_image_cords(x,  y, xi, yi);
+		transform_to_image_cords(x, y, xi, yi);
 
-		if (brush.get_tip_width() > 1) draw_thick_dot(xi, yi, brush);
-		else draw_single_pixel(xi, yi, brush);
+		if (brush.get_tip_width() > 1)
+			draw_thick_dot(xi, yi, brush);
+		else
+			draw_single_pixel(xi, yi, brush);
 	}
 	void draw_solid_line(StraightLine line, BasicBrush brush)
 	{
@@ -133,7 +125,7 @@ public:
 	void draw_dotted_line(StraightLine line, BasicBrush brush)
 	{
 		double line_len = line.get_length();
-		double dotted_step = DOTTED_LINE_FACTOR / line_len ;
+		double dotted_step = DOTTED_LINE_FACTOR / line_len;
 
 		for (double t = 0.0; t < 1.0; t += dotted_step)
 		{
@@ -167,10 +159,10 @@ public:
 	{
 		for (int i = 1; i < poly.count_vertices(); i++)
 		{
-			StraightLine line{ poly[i - 1], poly[i] };
+			StraightLine line{poly[i - 1], poly[i]};
 			draw_solid_line(line, brush);
 		}
-		StraightLine line_closure{ poly[poly.count_vertices()-1], poly[0] };
+		StraightLine line_closure{poly[poly.count_vertices() - 1], poly[0]};
 		draw_solid_line(line_closure, brush);
 	}
 
@@ -187,7 +179,7 @@ public:
 		double x2_flat = (this->projection_distance / z2) * v2.get_x() * this->obj_drawing_scale;
 		double y2_flat = (this->projection_distance / z2) * v2.get_y() * this->obj_drawing_scale;
 
-		draw_solid_line(StraightLine{ x1_flat, y1_flat, x2_flat, y2_flat }, brush);
+		draw_solid_line(StraightLine{x1_flat, y1_flat, x2_flat, y2_flat}, brush);
 	}
 	void draw_face(Face f, BasicBrush brush)
 	{
@@ -195,10 +187,10 @@ public:
 		{
 			for (int i = 1; i < f.count_vertices(); i++)
 			{
-				Edge e{ f[i - 1], f[i] };
+				Edge e{f[i - 1], f[i]};
 				draw_edge(e, brush);
 			}
-			Edge e_closure{ f[f.count_vertices() - 1], f[0] };
+			Edge e_closure{f[f.count_vertices() - 1], f[0]};
 			draw_edge(e_closure, brush);
 		}
 	}
@@ -215,12 +207,21 @@ public:
 		Vect3 tl_90 = mult_matrix_by_vector3(matrix_90, tl);
 		Vect3 br_90 = mult_matrix_by_vector3(matrix_90, br);
 
-		double max_displacement = std::max({ abs(tl.get_x()), abs(tl.get_z()),
-			                                 abs(br.get_x()), abs(br.get_z()),
-											 abs(tl_45.get_x()), abs(tl_45.get_z()),
-											 abs(br_45.get_x()), abs(br_45.get_z()),
-											 abs(tl_90.get_x()), abs(tl_90.get_z()),
-											 abs(br_90.get_x()), abs(br_90.get_z()), }) * 3.0;
+		double max_displacement = std::max({
+									  abs(tl.get_x()),
+									  abs(tl.get_z()),
+									  abs(br.get_x()),
+									  abs(br.get_z()),
+									  abs(tl_45.get_x()),
+									  abs(tl_45.get_z()),
+									  abs(br_45.get_x()),
+									  abs(br_45.get_z()),
+									  abs(tl_90.get_x()),
+									  abs(tl_90.get_z()),
+									  abs(br_90.get_x()),
+									  abs(br_90.get_z()),
+								  }) *
+								  3.0;
 		double proj_distance = max_displacement * 1.5;
 
 		double tl_scale_x = (this->width * 0.5 * 0.92) / ((proj_distance / (tl.get_z() - max_displacement)) * tl.get_x());
@@ -238,13 +239,12 @@ public:
 		double br_90_scale_x = (this->width * 0.5 * 0.92) / ((proj_distance / (br_90.get_z() - max_displacement)) * br_90.get_x());
 		double br_90_scale_y = (this->height * 0.5 * 0.92) / ((proj_distance / (br_90.get_z() - max_displacement)) * br_90.get_y());
 
-
-		double drawing_scale = std::min({ abs(tl_scale_x), abs(tl_scale_y),
-			                              abs(br_scale_x), abs(br_scale_y),
-										  abs(tl_45_scale_x), abs(tl_45_scale_y),
-										  abs(br_45_scale_x), abs(br_45_scale_y),
-										  abs(tl_90_scale_x), abs(tl_90_scale_y),
-										  abs(br_90_scale_x), abs(br_90_scale_y) });
+		double drawing_scale = std::min({abs(tl_scale_x), abs(tl_scale_y),
+										 abs(br_scale_x), abs(br_scale_y),
+										 abs(tl_45_scale_x), abs(tl_45_scale_y),
+										 abs(br_45_scale_x), abs(br_45_scale_y),
+										 abs(tl_90_scale_x), abs(tl_90_scale_y),
+										 abs(br_90_scale_x), abs(br_90_scale_y)});
 
 		this->z_offset = max_displacement;
 		this->projection_distance = proj_distance;
@@ -254,7 +254,7 @@ public:
 			   "       - Z Offset: %f\n"
 			   "       - Projection distance: %f\n"
 			   "       - Drawing scale: %f\n",
-			this->z_offset, this->projection_distance, this->obj_drawing_scale);
+			   this->z_offset, this->projection_distance, this->obj_drawing_scale);
 	}
 	void draw_obj(ObjReader obj, double rot_angle, BasicBrush faces_brush, BasicBrush bb_brush)
 	{
@@ -273,10 +273,10 @@ public:
 	// Transformations to image coords
 	void transform_to_image_cords(double x, double y, int &xi, int &yi)
 	{
-		xi = static_cast <int> (std::floor(x));
+		xi = static_cast<int>(std::floor(x));
 		xi += (width / 2);
 
-		yi = static_cast <int> (std::floor(y));
+		yi = static_cast<int>(std::floor(y));
 		yi += (height / 2);
 	}
 	int get_index_from_coords(int xi, int yi)
@@ -291,25 +291,27 @@ public:
 		const bool IS_DEBUGGING = false;
 		int index_pos = get_index_from_coords(xi, yi);
 
-		if (index_pos < 0 || index_pos >= max_index || xi<0 || xi>width - 1 || yi<0 || yi>height - 1)
+		if (index_pos < 0 || index_pos >= max_index || xi < 0 || xi > width - 1 || yi < 0 || yi > height - 1)
 		{
-			if (IS_DEBUGGING) printf("[DEBUG] Coordinates are not valid for drawing! [%i,%i]\n", xi, yi);
+			if (IS_DEBUGGING)
+				printf("[DEBUG] Coordinates are not valid for drawing! [%i,%i]\n", xi, yi);
 			return;
 		}
 
-		BasicColor brush_color = brush.get_color(); 
+		BasicColor brush_color = brush.get_color();
 		BasicColor pixel_color = get_color_at(xi, yi);
 		BasicColor blend_color = blend_two_colors(brush_color, BasicColor::over_ID, pixel_color); // TODO have brushes carry blendmode
 
 		pixels[index_pos++] = blend_color.r255();
 		pixels[index_pos++] = blend_color.g255();
 		pixels[index_pos++] = blend_color.b255();
-		if (channels == 4) pixels[index_pos++] = blend_color.a255();
+		if (channels == 4)
+			pixels[index_pos++] = blend_color.a255();
 	}
 	void draw_thick_dot(int xi, int yi, BasicBrush brush)
 	{
 		int half_tip = (int)(brush.get_tip_width() / 2.0);
-		
+
 		if (brush.get_tip_shape() == BasicBrush::SQUARE_TIP_SHAPE)
 		{
 			for (int x = -half_tip; x < half_tip + 1; x++)
@@ -326,13 +328,12 @@ public:
 			{
 				for (double th = 0.0; th < 360.0; th += 1.0)
 				{
-					int p_x = (int) (i * (rad_cos(th)));
-					int p_y = (int) (i * (rad_sin(th)));
+					int p_x = (int)(i * (rad_cos(th)));
+					int p_y = (int)(i * (rad_sin(th)));
 					draw_single_pixel(p_x + xi, p_y + yi, brush);
 				}
 			}
 		}
-
 	}
 	void draw_frame(int xi1, int yi1, int xi2, int yi2, BasicBrush brush)
 	{
@@ -439,16 +440,21 @@ public:
 		g = (double)pixels[idx++];
 		b = (double)pixels[idx++];
 
-		if (this->get_channels() == 4) { a = pixels[idx++]; }
+		if (this->get_channels() == 4)
+		{
+			a = pixels[idx++];
+		}
 
-		return BasicColor{ r, g, b, a };
-
+		return BasicColor{r, g, b, a};
 	}
 
 	// Utility
 	void clear()
-    {
-		for (int i = 0; i < width * height * channels; ++i) { pixels[i] = 0; }
+	{
+		for (int i = 0; i < width * height * channels; ++i)
+		{
+			pixels[i] = 0;
+		}
 	}
 
 	// Write to file
@@ -457,8 +463,7 @@ public:
 		const char *filename = (filename_string + ".png").c_str();
 		stbi_write_png(filename, width, height, channels, pixels, width * channels);
 	}
-
 };
-BasicImage BasicImage::HD_720()  { return BasicImage{ 1280, 720,  4 }; }
-BasicImage BasicImage::HD_1080() { return BasicImage{ 1920, 1080, 4 }; }
-BasicImage BasicImage::UHD_4K()  { return BasicImage{ 3840, 2160, 4 }; }
+BasicImage BasicImage::HD_720() { return BasicImage{1280, 720, 4}; }
+BasicImage BasicImage::HD_1080() { return BasicImage{1920, 1080, 4}; }
+BasicImage BasicImage::UHD_4K() { return BasicImage{3840, 2160, 4}; }
